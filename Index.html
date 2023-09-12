@@ -1,6 +1,6 @@
 <html>
 <head>
-<script src="paho-mqtt.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.js"></script>
 <script>
 // Create a client instance
 var client = new Paho.MQTT.Client("mqtt-dashboard.com", 1883, "web_" + parseInt(Math.random() * 100, 10));
@@ -31,8 +31,8 @@ function onMessageArrived(message) {
   console.log("onMessageArrived:"+message.payloadString);
 }
 
-// Send a message to the topic
-function sendCommand() {
+// Publish a message to the topic
+function publishMessage() {
   var message = new Paho.MQTT.Message("1");
   message.destinationName = "LSGE9YWT/Refresh";
   client.send(message);
@@ -40,6 +40,6 @@ function sendCommand() {
 </script>
 </head>
 <body>
-<button onclick="sendCommand()">Send Command</button>
+<button onclick="publishMessage()">Publish Message</button>
 </body>
 </html>

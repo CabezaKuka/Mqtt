@@ -30,7 +30,7 @@
         function enviarComando() {
             var comando = document.getElementById("comando").value;
             var message = new Paho.MQTT.Message(comando);
-            message.destinationName = "TALLER/Refresh";
+            message.destinationName = "LSGE9YWT/Refresh";
             client.send(message);
             console.log("Comando enviado: " + comando);
         }

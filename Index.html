@@ -1,35 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Enviar comando MQTT</title>
+    <title>Enviar Comando MQTT</title>
 </head>
 <body>
-  <h1>Enviar comando MQTT</h1>
-  <p>Haz clic en el botón para enviar el comando 1 al topico LSGE9YWT/Refresh.</p>
-  <button id="send-command">Enviar comando</button>
+    <form action="#" method="post">
+        <label for="mqtt_topic">Tópico MQTT:</label>
+        <input type="text" id="mqtt_topic" name="mqtt_topic" value="LSGE9YWT/Refresh"><br><br>
+        
+        <label for="mqtt_message">Comando MQTT:</label>
+        <input type="text" id="mqtt_message" name="mqtt_message" value="1"><br><br>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('#send-command').on('click', function() {
-        $.ajax({
-          url: '/send-command',
-          type: 'POST',
-          data: {
-            command: 1,
-            topic: 'LSGE9YWT/Refresh',
-            broker: 'mqtt-dashboard.com',
-            port: 1883
-          }
-        }).done(function() {
-          alert('Comando enviado correctamente');
-        }).fail(function(error) {
-          alert('Error al enviar el comando');
-          console.log(error);
+        <input type="submit" value="Enviar Comando MQTT">
+    </form>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const topic = document.getElementById('mqtt_topic').value;
+            const message = document.getElementById('mqtt_message').value;
+
+            const client = new Paho.MQTT.Client('mqtt-dashboard.com', 1883, 'mqtt-client-id');
+
+            client.onConnectionLost = function(responseObject) {
+                if (responseObject.errorCode !== 0) {
+                    console.log('Conexión MQTT perdida: ' + responseObject.errorMessage);
+                }
+            };
+
+            client.connect({ onSuccess: onConnect });
+
+            function onConnect() {
+                console.log('Conexión MQTT exitosa');
+                const message = new Paho.MQTT.Message(message);
+                message.destinationName = topic;
+                client.send(message);
+                console.log('Comando MQTT enviado');
+                client.disconnect();
+            }
         });
-      });
-    });
-  </script>
+    </script>
 </body>
 </html>

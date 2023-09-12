@@ -1,39 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Enviar Comandos MQTT</title>
+  <meta charset="UTF-8">
+  <title>Enviar comando MQTT</title>
 </head>
 <body>
-    <h1>Enviar Comandos MQTT</h1>
-    
-    <label for="comando">Comando:</label>
-    <input type="text" id="comando">
-    <button onclick="enviarComando()">Enviar</button>
+  <h1>Enviar comando MQTT</h1>
+  <p>Haz clic en el botón para enviar el comando 1 al topico LSGE9YWT/Refresh.</p>
+  <button id="send-command">Enviar comando</button>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"></script>
-    <script>
-        var client = new Paho.MQTT.Client("mqtt-dashboard.com", Number(1883), "web_" + parseInt(Math.random() * 100, 10));
-        
-        client.onConnectionLost = function (responseObject) {
-            if (responseObject.errorCode !== 0) {
-                console.log("Conexión MQTT perdida: " + responseObject.errorMessage);
-            }
-        };
-
-        client.connect({
-            onSuccess: function () {
-                console.log("Conexión MQTT exitosa");
-            },
-            useSSL: false
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#send-command').on('click', function() {
+        $.ajax({
+          url: '/send-command',
+          type: 'POST',
+          data: {
+            command: 1,
+            topic: 'LSGE9YWT/Refresh',
+            broker: 'mqtt-dashboard.com',
+            port: 1883
+          }
+        }).done(function() {
+          alert('Comando enviado correctamente');
+        }).fail(function(error) {
+          alert('Error al enviar el comando');
+          console.log(error);
         });
-
-        function enviarComando() {
-            var comando = document.getElementById("comando").value;
-            var message = new Paho.MQTT.Message(comando);
-            message.destinationName = "LSGE9YWT/Refresh";
-            client.send(message);
-            console.log("Comando enviado: " + comando);
-        }
-    </script>
+      });
+    });
+  </script>
 </body>
 </html>

@@ -33,7 +33,7 @@ function onMessageArrived(message) {
 
 // Send a message to the topic
 function sendCommand() {
-  var message = new Paho.MQTT.Message("Refresh");
+  var message = new Paho.MQTT.Message("1");
   message.destinationName = "LSGE9YWT/Refresh";
   client.send(message);
 }
